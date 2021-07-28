@@ -235,18 +235,10 @@ public class LocketteProAPI {
     
     public static boolean isUpDownAlsoLockableBlock(Block block){
         if (Config.isLockable(block.getType())){
-            switch (block.getType()){
-            case OAK_DOOR:
-            case SPRUCE_DOOR:
-            case BIRCH_DOOR:
-            case JUNGLE_DOOR:
-            case ACACIA_DOOR:
-            case DARK_OAK_DOOR:
-            case IRON_DOOR:
-                return true;
-            default:
-                return false;
-            }
+            return switch (block.getType()) {
+                case OAK_DOOR, SPRUCE_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, DARK_OAK_DOOR, IRON_DOOR -> true;
+                default -> false;
+            };
         }
         return false;
     }
@@ -511,7 +503,7 @@ public class LocketteProAPI {
             doors[0] = block; doors[1] = up;
         }
         if (down.getType() == block.getType()){
-            if (found == true){ // error 3 doors
+            if (found){ // error 3 doors
                 return null;
             }
             doors[1] = block; doors[0] = down;
@@ -526,20 +518,12 @@ public class LocketteProAPI {
     public static boolean isDoubleDoorBlock(Block block){
         return Tag.DOORS.isTagged(block.getType());
     }
-    
+
     public static boolean isSingleDoorBlock(Block block){
-        switch (block.getType()){
-        case OAK_FENCE_GATE:
-        case SPRUCE_FENCE_GATE:
-        case BIRCH_FENCE_GATE:
-        case JUNGLE_FENCE:
-        case ACACIA_DOOR: 
-        case DARK_OAK_DOOR:
-        case IRON_TRAPDOOR:
-            return true;
-        default:
-            return false;	
-        }	
+        return switch (block.getType()) {
+            case OAK_FENCE_GATE, SPRUCE_FENCE_GATE, BIRCH_FENCE_GATE, JUNGLE_FENCE, ACACIA_DOOR, DARK_OAK_DOOR, IRON_TRAPDOOR -> true;
+            default -> false;
+        };
     }
     
     public static Block getBottomDoorBlock(Block block){ // Requires isDoubleDoorBlock || isSingleDoorBlock

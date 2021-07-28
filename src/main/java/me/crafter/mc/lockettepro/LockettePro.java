@@ -162,11 +162,10 @@ public class LockettePro extends JavaPlugin {
                         return true;
                 }
                 // The following commands requires player
-                if (!(sender instanceof Player)){
+                if (!(sender instanceof Player player)){
                     Utils.sendMessages(sender, Config.getLang("command-usage"));
                     return false;
                 }
-                Player player = (Player)sender;
                 switch (args[0]){
                 case "1":
                 case "2":
