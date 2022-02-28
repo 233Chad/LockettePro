@@ -12,12 +12,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 public class BlockInventoryMoveListener implements Listener {
-    
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
-    public void onInventoryMove(InventoryMoveItemEvent event){
-        if (Config.isItemTransferOutBlocked() || Config.getHopperMinecartAction() != (byte)0){
-            if (isInventoryLocked(event.getSource())){
-                if (Config.isItemTransferOutBlocked()){
+    public void onInventoryMove(InventoryMoveItemEvent event) {
+        if (Config.isItemTransferOutBlocked() || Config.getHopperMinecartAction() != (byte) 0) {
+            if (isInventoryLocked(event.getSource())) {
+                if (Config.isItemTransferOutBlocked()) {
                     event.setCancelled(true);
                 }
                 // Additional Hopper Minecart Check
@@ -36,26 +36,26 @@ public class BlockInventoryMoveListener implements Listener {
                 return;
             }
         }
-        if (Config.isItemTransferInBlocked()){
-            if (isInventoryLocked(event.getDestination())){
+        if (Config.isItemTransferInBlocked()) {
+            if (isInventoryLocked(event.getDestination())) {
                 event.setCancelled(true);
                 return;
             }
         }
     }
-    
-    public boolean isInventoryLocked(Inventory inventory){
+
+    public boolean isInventoryLocked(Inventory inventory) {
         InventoryHolder inventoryholder = inventory.getHolder();
-        if (inventoryholder instanceof DoubleChest){
-            inventoryholder = ((DoubleChest)inventoryholder).getLeftSide();
+        if (inventoryholder instanceof DoubleChest) {
+            inventoryholder = ((DoubleChest) inventoryholder).getLeftSide();
         }
-        if (inventoryholder instanceof BlockState){
-            Block block = ((BlockState)inventoryholder).getBlock();
-            if (Config.isCacheEnabled()){ // Cache is enabled
-                if (Utils.hasValidCache(block)){
+        if (inventoryholder instanceof BlockState) {
+            Block block = ((BlockState) inventoryholder).getBlock();
+            if (Config.isCacheEnabled()) { // Cache is enabled
+                if (Utils.hasValidCache(block)) {
                     return Utils.getAccess(block);
                 } else {
-                    if (LocketteProAPI.isLocked(block)){
+                    if (LocketteProAPI.isLocked(block)) {
                         Utils.setCache(block, true);
                         return true;
                     } else {
@@ -64,14 +64,10 @@ public class BlockInventoryMoveListener implements Listener {
                     }
                 }
             } else { // Cache is disabled
-                if (LocketteProAPI.isLocked(block)){
-                    return true;
-                } else {
-                    return false;
-                }
+                return LocketteProAPI.isLocked(block);
             }
         }
         return false;
     }
-    
+
 }

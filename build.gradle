@@ -1,52 +1,63 @@
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id("xyz.jpenilla.run-paper") version "1.0.6"
+}
 // Suppiled by Jenkins
 ext.majorVersion = 2
-ext.minorVersion = 10
-ext.minecraftVersion = "1.17.1"
+ext.minorVersion = 12
+ext.minecraftVersion = "1.18.1"
+
 ext.buildNumber = System.env.BUILD_NUMBER == null ? "x"                : "$System.env.BUILD_NUMBER"
 ext.mavenDirectory = System.env.MAVEN_DIR == null ? "$projectDir/repo" : "$System.env.MAVEN_DIR"
 ext.jdDirectory = System.env.JAVADOCS_DIR == null ? null               : "$System.env.JAVADOCS_DIR"
 
-sourceCompatibility = 16
-targetCompatibility = 16
+sourceCompatibility = 17
+targetCompatibility = 17
 
 // differet version convension from Nyaa plugins
 group = "me.crafter.mc"
-archivesBaseName = "LockettePro"
-version = "$majorVersion.$minorVersion.${buildNumber}-mc$minecraftVersion"
+archivesBaseName = "LockettePro-mc$minecraftVersion"
+version = "$majorVersion.$minorVersion.$buildNumber".toString()
+runServer {
+    minecraftVersion("1.18.1")
+}
+
+// extra compile warnings
+compileJava {
+    options.compilerArgs += ["-Xlint:deprecation"]
+    options.encoding = 'UTF-8'
+}
 
 repositories {
     mavenCentral()
     maven {name 'Spigot';     url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
     maven {name 'Sonatype';   url 'https://oss.sonatype.org/content/groups/public'}
-    maven {name 'sk89q';      url 'https://maven.sk89q.com/artifactory/repo/'}
+    maven {name 'sk89q-repo'; url "https://maven.enginehub.org/repo/" }
     maven {name 'playpro';    url 'https://maven.playpro.com/'}
     maven {name 'vault-repo'; url 'https://jitpack.io'}
     maven {name 'dmulloy2';   url 'https://repo.dmulloy2.net/content/groups/public/'}
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
-    compileOnly('net.milkbowl.vault:VaultAPI:1.7') { transitive = false }
-    compileOnly('com.sk89q.worldguard:worldguard-bukkit:7.0.2-SNAPSHOT') { transitive = false }
-    compileOnly('com.comphenix.protocol:ProtocolLib:4.6.0') { transitive = false }
-    // Note: the repo maven.playpro.com is not updated to match the version on spigotmc
-    compileOnly('net.coreprotect:coreprotect:20.0') { transitive = false }
+    implementation 'org.jetbrains:annotations:22.0.0'
+    compileOnly "org.spigotmc:spigot-api:$minecraftVersion-R0.1-SNAPSHOT"
+    compileOnly ("com.github.MilkBowl:VaultAPI:1.7"){ transitive = false}
+    compileOnly ('com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT') { transitive = false }
+    compileOnly (group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.8.0-SNAPSHOT"){ transitive = false}
+    compileOnly ('net.coreprotect:coreprotect:20.4'){ transitive = false}
 }
-compileJava {
-    options.compilerArgs += ["-Xlint:deprecation"]
-}
+
 processResources {
     expand version: project.version
 }
 
 // maven publications
 task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
+    archiveClassifier.set("sources")
     from sourceSets.main.java.srcDirs
 }
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
