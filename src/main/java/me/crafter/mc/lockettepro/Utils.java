@@ -67,6 +67,7 @@ public class Utils {
         }
         side.setLine(0, line1);
         side.setLine(1, line2);
+        sign.setEditable(false);
         sign.update();
         return newsign;
     }
