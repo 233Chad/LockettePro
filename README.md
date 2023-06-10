@@ -1,11 +1,15 @@
-# LockettePro [![Build Status](https://ci.nyaacat.com/job/LockettePro/job/1.17/badge/icon?style=flat-square)](https://ci.nyaacat.com/job/LockettePro/job/1.17/)
+# LockettePro
+[![Java CI with Gradle](https://github.com/233Chad/LockettePro/actions/workflows/gradle.yml/badge.svg)](https://github.com/233Chad/LockettePro/actions/workflows/gradle.yml)
 
-***WARNING: Versions for Minecraft 1.15.x are not fully tested yet.***
+
+***WARNING: Versions for Minecraft 1.20 are not fully tested yet.***
 Please create an issus if you find anything wrong. Thank you.
 For Minecraft 1.14.4, please download [build \#9](https://ci.nyaacat.com/job/LockettePro/9/).
 
-All versions can be found at [Nyaa CI server](https://ci.nyaacat.com/job/LockettePro/) and
+Older versions can be found at [Nyaa CI server](https://ci.nyaacat.com/job/LockettePro/) and
 [Github Release Page](https://github.com/NyaaCat/LockettePro/releases).
+
+Starting with 1.20, it can be found at [Github Action Page](found at)
 
 ### LockettePro - A much better Lockette plugin for Bukkit
 
@@ -23,7 +27,6 @@ LockettePro is a block-protection plugin based on Lockette (https://github.com/A
 ### Links
 Spigot release page: https://www.spigotmc.org/resources/lockettepro.20427/  
 Bukkit release page: http://dev.bukkit.org/bukkit-plugins/lockettepro/  
-MCBBS release page: http://www.mcbbs.net/thread-567962-1-1.html    
 MC 1.6~1.7 Port: https://github.com/connection-lost/LockettePro/releases/tag/v1.9.4
 
 ### Version history
