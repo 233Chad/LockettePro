@@ -9,6 +9,7 @@ import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Gate;
 import org.bukkit.block.data.type.TrapDoor;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 
 public class LocketteProAPI {
@@ -226,13 +227,14 @@ public class LocketteProAPI {
                 return true;
             }
             // End temp workaround bad code for checking up and down signs
-        } if (Tag.SIGNS.isTagged(block.getType()) ||
-            block.getBlockData() instanceof Chest ||
-            block.getBlockData() instanceof DoubleChest) {
+        }
+        if (Tag.SIGNS.isTagged(block.getType()) ||
+                block.getBlockData() instanceof Chest ||
+                block.getBlockData() instanceof DoubleChest) {
             for (BlockFace blockface : allfaces) {
                 Block newblock = block.getRelative(blockface);
                 if (newblock.getBlockData() instanceof Chest ||
-                newblock.getBlockData() instanceof DoubleChest) {
+                        newblock.getBlockData() instanceof DoubleChest) {
                     if (isLockedSingleBlock(newblock, null) && !isOwnerSingleBlock(newblock, null, player)) {
                         return true;
                     }
@@ -244,9 +246,7 @@ public class LocketteProAPI {
         switch (block.getType()) {
 
             // This is extra interfere block
-            case HOPPER:
-            case DISPENSER:
-            case DROPPER:
+            case HOPPER, DISPENSER, DROPPER -> {
                 if (!Config.isInterferePlacementBlocked()) return false;
                 for (BlockFace blockface : allfaces) {
                     Block newblock = block.getRelative(blockface);
@@ -263,9 +263,9 @@ public class LocketteProAPI {
                             break;
                     }
                 }
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
         return false;
     }
@@ -275,16 +275,16 @@ public class LocketteProAPI {
     }
 
     public static boolean isLockSign(Block block) {
-        return isSign(block) && isLockString(((Sign) block.getState()).getLine(0));
+        return isSign(block) && isLockString(((Sign) block.getState()).getSide(Side.FRONT).getLine(0));
     }
 
     public static boolean isAdditionalSign(Block block) {
-        return isSign(block) && isAdditionalString(((Sign) block.getState()).getLine(0));
+        return isSign(block) && isAdditionalString(((Sign) block.getState()).getSide(Side.FRONT).getLine(0));
     }
 
     public static boolean isLockSignOrAdditionalSign(Block block) {
         if (isSign(block)) {
-            String line = ((Sign) block.getState()).getLine(0);
+            String line = ((Sign) block.getState()).getSide(Side.FRONT).getLine(0);
             return isLockStringOrAdditionalString(line);
         } else {
             return false;
@@ -292,7 +292,7 @@ public class LocketteProAPI {
     }
 
     public static boolean isOwnerOnSign(Block block, Player player) { // Requires isLockSign
-        String[] lines = ((Sign) block.getState()).getLines();
+        String[] lines = ((Sign) block.getState()).getSide(Side.FRONT).getLines();
         if (Utils.isPlayerOnLine(player, lines[1])) {
             if (Config.isUuidEnabled()) {
                 Utils.updateLineByPlayer(block, 1, player);
@@ -303,7 +303,7 @@ public class LocketteProAPI {
     }
 
     public static boolean isUserOnSign(Block block, Player player) { // Requires (isLockSign or isAdditionalSign)
-        String[] lines = ((Sign) block.getState()).getLines();
+        String[] lines = ((Sign) block.getState()).getSide(Side.FRONT).getLines();
         // Normal
         for (int i = 1; i < 4; i++) {
             if (Utils.isPlayerOnLine(player, lines[i])) {
@@ -325,7 +325,7 @@ public class LocketteProAPI {
 
     public static boolean isSignExpired(Block block) {
         if (!isSign(block) || !isLockSign(block)) return false;
-        return isLineExpired(((Sign) block.getState()).getLine(0));
+        return isLineExpired(((Sign) block.getState()).getSide(Side.FRONT).getLine(0));
     }
 
     public static boolean isLineExpired(String line) {
@@ -380,7 +380,7 @@ public class LocketteProAPI {
             Block relative = block.getRelative(blockface);
             if (isSign(relative)) {
                 Sign sign = (Sign) relative.getState();
-                for (String line : sign.getLines()) {
+                for (String line : sign.getSide(Side.FRONT).getLines()) {
                     int linetime = Config.getTimer(line);
                     if (linetime > 0) return linetime;
                 }
@@ -463,14 +463,14 @@ public class LocketteProAPI {
         org.bukkit.block.data.Openable openablestate = (org.bukkit.block.data.Openable) block.getBlockData();
         openablestate.setOpen(open);
         block.setBlockData(openablestate);
-        block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
+        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1f, 1f);
     }
 
     public static void toggleDoor(Block block) {
         org.bukkit.block.data.Openable openablestate = (org.bukkit.block.data.Openable) block.getBlockData();
         openablestate.setOpen(!openablestate.isOpen());
         block.setBlockData(openablestate);
-        block.getWorld().playEffect(block.getLocation(), Effect.DOOR_TOGGLE, 0);
+        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_WOODEN_DOOR_OPEN, 1f, 1f);
     }
 
     public static BlockFace getRelativeChestFace(Block block) {
