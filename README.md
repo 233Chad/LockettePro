@@ -9,7 +9,7 @@ For Minecraft 1.14.4, please download [build \#9](https://ci.nyaacat.com/job/Loc
 Older versions can be found at [Nyaa CI server](https://ci.nyaacat.com/job/LockettePro/) and
 [Github Release Page](https://github.com/NyaaCat/LockettePro/releases).
 
-Starting with 1.20, it can be found at [Github Action Page](found at)
+Starting with 1.20, it can be found at [Github Action Page](https://github.com/233Chad/LockettePro/actions)
 
 ### LockettePro - A much better Lockette plugin for Bukkit
 
