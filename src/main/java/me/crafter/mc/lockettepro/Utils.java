@@ -48,7 +48,7 @@ public class Utils {
     // Helper functions
     public static Block putSignOn(Block block, BlockFace blockface, String line1, String line2, Material material) {
         Block newsign = block.getRelative(blockface);
-         Material blockType = Material.getMaterial(material.name().replace("_SIGN", "_WALL_SIGN"));
+        Material blockType = Material.getMaterial(material.name().replace("_SIGN", "_WALL_SIGN"));
         if (blockType != null && Tag.WALL_SIGNS.isTagged(blockType)) {
             newsign.setType(blockType);
         } else {
@@ -67,7 +67,7 @@ public class Utils {
         }
         side.setLine(0, line1);
         side.setLine(1, line2);
-        sign.setEditable(false);
+        sign.setWaxed(true);
         sign.update();
         return newsign;
     }
@@ -289,6 +289,13 @@ public class Utils {
         } else {
             return Config.getLockDefaultCreateTimeUnix();
         }
+    }
+
+    public static boolean isAxe(ItemStack itemStack) {
+        if (itemStack == null)
+            return false;
+        Material eventItemType = itemStack.getType();
+        return Tag.ITEMS_AXES.isTagged(eventItemType);
     }
 
     public static boolean isPlayerOnLine(Player player, String text) {

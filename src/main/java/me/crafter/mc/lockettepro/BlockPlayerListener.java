@@ -1,11 +1,9 @@
 package me.crafter.mc.lockettepro;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -105,7 +103,7 @@ public class BlockPlayerListener implements Listener {
     }
 
     // Manual protection
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onManualLock(SignChangeEvent event) {
         if (!Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) return;
         String topline = event.getLine(0);
@@ -141,6 +139,9 @@ public class BlockPlayerListener implements Listener {
                 if (!locked && !LocketteProAPI.isUpDownLockedDoor(block)) {
                     if (LocketteProAPI.isLockString(topline)) {
                         Utils.sendMessages(player, Config.getLang("locked-manual"));
+                        Sign sign = (Sign) event.getBlock().getState();
+                        sign.setWaxed(true);
+                        sign.update();
                         if (!player.hasPermission("lockettepro.lockothers")) { // Player with permission can lock with another name
                             event.setLine(1, player.getName());
                         }
@@ -223,6 +224,29 @@ public class BlockPlayerListener implements Listener {
                 event.setCancelled(true);
                 Utils.playAccessDenyEffect(player, block);
             }
+        }
+    }
+
+    //protect sign from being changed
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onAttemptChangeLockerSign(SignChangeEvent event){
+        Block block = event.getBlock();
+        if (LocketteProAPI.isLockSign(block) || LocketteProAPI.isAdditionalSign(block)) {
+            Sign sign = (Sign) block.getState();
+            sign.setWaxed(true);
+            sign.update();
+            event.setCancelled(true);
+            block.getWorld().spawnParticle(Particle.SMOKE_NORMAL,block.getLocation(),5);
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGH,ignoreCancelled = true)
+    public void onAttemptBreakWaxedLockerSign(PlayerInteractEvent event){
+        Action action = event.getAction();
+        Block block = event.getClickedBlock();
+        if (action == Action.RIGHT_CLICK_BLOCK &&
+                (LocketteProAPI.isLockSign(block) || LocketteProAPI.isAdditionalSign(block))
+                && Utils.isAxe(event.getItem())) {
+            event.setCancelled(true);
         }
     }
 
