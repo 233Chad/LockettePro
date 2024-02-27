@@ -17,6 +17,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -78,12 +79,16 @@ public class Utils {
         sign.update();
     }
 
-    public static void removeASign(Player player) {
+    public static void removeASign(Player player, EquipmentSlot hand) {
         if (player.getGameMode() == GameMode.CREATIVE) return;
-        if (player.getInventory().getItemInMainHand().getAmount() == 1) {
-            player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+        ItemStack item = player.getInventory().getItem(hand);
+
+        if (item.getAmount() == 1) {
+            player.getInventory().setItem(hand, new ItemStack(Material.AIR));
         } else {
-            player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
+            ItemStack itemToSet = item.clone();
+            itemToSet.setAmount(itemToSet.getAmount() - 1);
+            player.getInventory().setItem(hand, itemToSet);
         }
     }
 
@@ -170,7 +175,7 @@ public class Utils {
     public static void updateUuidByUsername(final Block block, final int line) {
         Sign sign = (Sign) block.getState();
         final String original = sign.getSide(Side.FRONT).getLine(line);
-        Bukkit.getScheduler().runTaskAsynchronously(LockettePro.getPlugin(), () -> {
+        CompatibleScheduler.runTaskAsynchronously(LockettePro.getPlugin(), () -> {
             String username = original;
             if (username.contains("#")) {
                 username = username.split("#")[0];
@@ -185,7 +190,7 @@ public class Utils {
             }
             if (uuid != null) {
                 final String towrite = username + "#" + uuid;
-                Bukkit.getScheduler().runTask(LockettePro.getPlugin(), () -> setSignLine(block, line, towrite));
+                CompatibleScheduler.runTask(LockettePro.getPlugin(), block.getLocation(), () -> setSignLine(block, line, towrite));
             }
         });
     }
