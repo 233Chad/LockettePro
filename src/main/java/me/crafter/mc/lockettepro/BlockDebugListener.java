@@ -1,5 +1,6 @@
 package me.crafter.mc.lockettepro;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -48,9 +49,9 @@ public class BlockDebugListener implements Listener {
 
     public String formatBoolean(boolean tf) {
         if (tf) {
-            return ChatColor.GREEN + "true";
+            return NamedTextColor.GREEN + "true";
         } else {
-            return ChatColor.RED + "false";
+            return NamedTextColor.RED + "false";
         }
     }
 

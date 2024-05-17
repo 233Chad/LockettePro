@@ -1,5 +1,6 @@
 package me.crafter.mc.lockettepro;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -104,8 +105,8 @@ public class Config {
         lockexpiredays = config.getDouble("lock-expire-days", 999.9D);
         lockdefaultcreatetime = config.getLong("lock-default-create-time-unix", -1L);
         if (lockdefaultcreatetime < -1L) lockdefaultcreatetime = -1L;
-        lockexpirestring = ChatColor.translateAlternateColorCodes('&',
-                config.getString("lock-expire-string", "&3[Expired]"));
+        lockexpirestring = LegacyComponentSerializer.legacyAmpersand().deserialize(
+                config.getString("lock-expire-string", "&3[Expired]")).toString();
         List<String> unprocesseditems = config.getStringList("lockables");
         lockables = new HashSet<Material>();
         for (String unprocesseditem : unprocesseditems) {
@@ -155,8 +156,8 @@ public class Config {
         config.addDefault("everyone-signs", everyone_signs);
         String[] timer_signs = {"[Timer:@]", "[timer:@]"};
         config.addDefault("timer-signs", timer_signs);
-        String[] lockables = {"CHEST","TRAPPED_CHEST","FURNACE","BURNING_FURNACE","HOPPER","BREWING_STAND","DIAMOND_BLOCK",
-                "OAK_DOOR","SPRUCE_DOOR","BIRCH_DOOR","JUNGLE_DOOR","ACACIA_DOOR","DARK_OAK_DOOR","IRON_DOOR", "LECTERN"};
+        String[] lockables = {"CHEST", "TRAPPED_CHEST", "FURNACE", "BURNING_FURNACE", "HOPPER", "BREWING_STAND", "DIAMOND_BLOCK",
+                "OAK_DOOR", "SPRUCE_DOOR", "BIRCH_DOOR", "JUNGLE_DOOR", "ACACIA_DOOR", "DARK_OAK_DOOR", "IRON_DOOR", "LECTERN"};
         config.addDefault("lockables", lockables);
         String[] protection_exempt = {"nothing"};
         config.addDefault("protection-exempt", protection_exempt);
@@ -220,7 +221,7 @@ public class Config {
     }
 
     public static String getLang(String path) {
-        return ChatColor.translateAlternateColorCodes('&', lang.getString(path, ""));
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(lang.getString(path, "")).toString();
     }
 
     public static boolean isUuidEnabled() {

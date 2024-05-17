@@ -69,8 +69,8 @@ public class Utils {
         if (newsign.getType() == Material.DARK_OAK_WALL_SIGN) {
             side.setColor(DyeColor.WHITE);
         }
-        side.setLine(0, line1);
-        side.setLine(1, line2);
+        side.line(0, Component.text(line1));
+        side.line(1, Component.text(line2));
         sign.setWaxed(true);
         sign.update();
         return newsign;
@@ -78,7 +78,7 @@ public class Utils {
 
     public static void setSignLine(Block block, int line, String text) { // Requires isSign
         Sign sign = (Sign) block.getState();
-        sign.getSide(Side.FRONT).setLine(line, text);
+        sign.getSide(Side.FRONT).line(line, Component.text(text));
         sign.update();
     }
 
@@ -123,7 +123,7 @@ public class Utils {
     }
 
     public static void sendMessages(CommandSender sender, String messages) {
-        if (messages == null || messages.equals("")) return;
+        if (messages == null || messages.isEmpty()) return;
         sender.sendMessage(messages);
     }
 
@@ -177,7 +177,7 @@ public class Utils {
 
     public static void updateUuidByUsername(final Block block, final int line) {
         Sign sign = (Sign) block.getState();
-        final String original = sign.getSide(Side.FRONT).getLine(line);
+        final String original = sign.getSide(Side.FRONT).lines().get(line).toString();
         CompatibleScheduler.runTaskAsynchronously(LockettePro.getPlugin(), () -> {
             String username = original;
             if (username.contains("#")) {
@@ -200,7 +200,7 @@ public class Utils {
 
     public static void updateUsernameByUuid(Block block, int line) {
         Sign sign = (Sign) block.getState();
-        String original = sign.getSide(Side.FRONT).getLine(line);
+        String original = sign.getSide(Side.FRONT).lines().get(line).toString();
         if (isUsernameUuidLine(original)) {
             String uuid = getUuidFromLine(original);
             if (uuid == null) return;
@@ -218,9 +218,9 @@ public class Utils {
         Sign sign = (Sign) block.getState();
         SignSide side = sign.getSide(Side.FRONT);
         if (noexpire) {
-            side.setLine(0, side.getLine(0) + "#created:" + -1);
+            side.line(0, Component.text(side.lines().get(0) + "#created:" + -1));
         } else {
-            side.setLine(0, side.getLine(0) + "#created:" + (int) (System.currentTimeMillis() / 1000));
+            side.line(0, Component.text(side.lines().get(0) + "#created:" + (int) (System.currentTimeMillis() / 1000)));
         }
         sign.update();
     }
@@ -324,9 +324,9 @@ public class Utils {
     }
 
     public static String getSignLineFromUnknown(String json) {
-        if(!json.contains("{")){
+        if (!json.contains("{")) {
             return trimNbtRawString(json);
-        }else{
+        } else {
             JsonObject line = getJsonObjectOrNull(json);
             if (line == null) return json;
 

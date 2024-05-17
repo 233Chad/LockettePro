@@ -1,5 +1,6 @@
 package me.crafter.mc.lockettepro;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -112,7 +113,7 @@ public class BlockPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onManualLock(SignChangeEvent event) {
         if (!Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) return;
-        String topline = event.getLine(0);
+        String topline = event.lines().get(0).toString();
         if (topline == null) return;
         Player player = event.getPlayer();
         /*  Issue #46 - Old version of Minecraft trim signs in unexpected way.
@@ -128,7 +129,7 @@ public class BlockPlayerListener implements Listener {
         if (!player.hasPermission("lockettepro.lock")) {
             String toplinetrimmed = topline.trim();
             if (LocketteProAPI.isLockString(toplinetrimmed) || LocketteProAPI.isAdditionalString(toplinetrimmed)) {
-                event.setLine(0, Config.getLang("sign-error"));
+                event.line(0, Component.text(Config.getLang("sign-error")));
                 Utils.sendMessages(player, Config.getLang("cannot-lock-manual"));
                 return;
             }
@@ -137,7 +138,7 @@ public class BlockPlayerListener implements Listener {
             Block block = LocketteProAPI.getAttachedBlock(event.getBlock());
             if (LocketteProAPI.isLockable(block)) {
                 if (Dependency.isProtectedFrom(block, player)) { // External check here
-                    event.setLine(0, Config.getLang("sign-error"));
+                    event.line(0, Component.text(Config.getLang("sign-error")));
                     Utils.sendMessages(player, Config.getLang("cannot-lock-manual"));
                     return;
                 }
@@ -148,25 +149,25 @@ public class BlockPlayerListener implements Listener {
                         Sign sign = (Sign) event.getBlock().getState();
                         sign.setWaxed(true);
                         if (!player.hasPermission("lockettepro.lockothers")) { // Player with permission can lock with another name
-                            event.setLine(1, player.getName());
+                            event.line(1, Component.text(player.getName()));
                         }
                         sign.update();
                         Utils.resetCache(block);
                     } else {
                         Utils.sendMessages(player, Config.getLang("not-locked-yet-manual"));
-                        event.setLine(0, Config.getLang("sign-error"));
+                        event.line(0, Component.text(Config.getLang("sign-error")));
                     }
                 } else if (!locked && LocketteProAPI.isOwnerUpDownLockedDoor(block, player)) {
                     if (LocketteProAPI.isLockString(topline)) {
                         Utils.sendMessages(player, Config.getLang("cannot-lock-door-nearby-manual"));
-                        event.setLine(0, Config.getLang("sign-error"));
+                        event.line(0, Component.text(Config.getLang("sign-error")));
                     } else {
                         Utils.sendMessages(player, Config.getLang("additional-sign-added-manual"));
                     }
                 } else if (LocketteProAPI.isOwner(block, player)) {
                     if (LocketteProAPI.isLockString(topline)) {
                         Utils.sendMessages(player, Config.getLang("block-already-locked-manual"));
-                        event.setLine(0, Config.getLang("sign-error"));
+                        event.line(0, Component.text(Config.getLang("sign-error")));
                     } else {
                         Utils.sendMessages(player, Config.getLang("additional-sign-added-manual"));
                     }
@@ -177,7 +178,7 @@ public class BlockPlayerListener implements Listener {
                 }
             } else {
                 Utils.sendMessages(player, Config.getLang("block-is-not-lockable"));
-                event.setLine(0, Config.getLang("sign-error"));
+                event.line(0, Component.text(Config.getLang("sign-error")));
                 Utils.playAccessDenyEffect(player, block);
             }
         }
@@ -359,10 +360,8 @@ public class BlockPlayerListener implements Listener {
         if (!player.hasPermission("lockettepro.lock")) return;
         if (Utils.shouldNotify(player) && Config.isLockable(block.getType())) {
             switch (Config.getQuickProtectAction()) {
-                case (byte) 0 ->
-                        Utils.sendMessages(player, Config.getLang("you-can-manual-lock-it"));
-                case (byte) 1, (byte) 2 ->
-                        Utils.sendMessages(player, Config.getLang("you-can-quick-lock-it"));
+                case (byte) 0 -> Utils.sendMessages(player, Config.getLang("you-can-manual-lock-it"));
+                case (byte) 1, (byte) 2 -> Utils.sendMessages(player, Config.getLang("you-can-quick-lock-it"));
             }
         }
     }

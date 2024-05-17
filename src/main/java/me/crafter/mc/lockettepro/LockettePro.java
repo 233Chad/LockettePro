@@ -1,5 +1,6 @@
 package me.crafter.mc.lockettepro;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -116,7 +117,7 @@ public class LockettePro extends JavaPlugin {
                     }
                     case "version" -> {
                         if (sender.hasPermission("lockettepro.version")) {
-                            sender.sendMessage(plugin.getDescription().getFullName());
+                            sender.sendMessage(plugin.getPluginMeta().getName());
                         } else {
                             Utils.sendMessages(sender, Config.getLang("no-permission"));
                         }
@@ -127,7 +128,7 @@ public class LockettePro extends JavaPlugin {
                         if (sender.hasPermission("lockettepro.debug")) {
                             sender.sendMessage("LockettePro Debug Message");
                             // Basic
-                            sender.sendMessage("LockettePro: " + getDescription().getVersion());
+                            sender.sendMessage("LockettePro: " + getPluginMeta().getVersion());
                             // Version
                             sender.sendMessage("Bukkit: " + "v" + Bukkit.getServer().getClass().getPackage().getName().split("v")[1]);
                             sender.sendMessage("Server version: " + Bukkit.getVersion());
@@ -139,22 +140,22 @@ public class LockettePro extends JavaPlugin {
                             if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
                                 sender.sendMessage(" - ProtocolLib missing");
                             } else {
-                                sender.sendMessage(" - ProtocolLib: " + Bukkit.getPluginManager().getPlugin("ProtocolLib").getDescription().getVersion());
+                                sender.sendMessage(" - ProtocolLib: " + Bukkit.getPluginManager().getPlugin("ProtocolLib").getPluginMeta().getVersion());
                             }
                             // Other
                             sender.sendMessage("Linked plugins:");
                             boolean linked = false;
                             if (Dependency.worldguard != null) {
                                 linked = true;
-                                sender.sendMessage(" - Worldguard: " + Dependency.worldguard.getDescription().getVersion());
+                                sender.sendMessage(" - Worldguard: " + Dependency.worldguard.getPluginMeta().getVersion());
                             }
                             if (Dependency.vault != null) {
                                 linked = true;
-                                sender.sendMessage(" - Vault: " + Dependency.vault.getDescription().getVersion());
+                                sender.sendMessage(" - Vault: " + Dependency.vault.getPluginMeta().getVersion());
                             }
                             if (Bukkit.getPluginManager().getPlugin("CoreProtect") != null) {
                                 linked = true;
-                                sender.sendMessage(" - CoreProtect: " + Bukkit.getPluginManager().getPlugin("CoreProtect").getDescription().getVersion());
+                                sender.sendMessage(" - CoreProtect: " + Bukkit.getPluginManager().getPlugin("CoreProtect").getPluginMeta().getVersion());
                             }
                             if (!linked) {
                                 sender.sendMessage(" - none");
@@ -187,7 +188,7 @@ public class LockettePro extends JavaPlugin {
                                 for (int i = 1; i < args.length; i++) {
                                     message.append(args[i]);
                                 }
-                                message = new StringBuilder(ChatColor.translateAlternateColorCodes('&', message.toString()));
+                                message = new StringBuilder(LegacyComponentSerializer.legacyAmpersand().deserialize(message.toString()).toString());
                                 if (!player.hasPermission("lockettepro.admin.edit") && !debug && message.length() > 18) {
                                     Utils.sendMessages(player, Config.getLang("line-is-too-long"));
                                     return true;
