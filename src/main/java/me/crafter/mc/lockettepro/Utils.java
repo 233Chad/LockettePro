@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashSet;
@@ -232,7 +233,7 @@ public class Utils {
     // Warning: don't use this in a sync way
     public static String getUuidByUsernameFromMojang(String username) {
         try {
-            URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
+            URL url = new URI("https://api.mojang.com/users/profiles/minecraft/" + username).toURL();
             URLConnection connection = url.openConnection();
             connection.setConnectTimeout(8000);
             connection.setReadTimeout(8000);

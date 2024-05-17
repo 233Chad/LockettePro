@@ -2,7 +2,7 @@
 [![Java CI with Gradle](https://github.com/233Chad/LockettePro/actions/workflows/gradle.yml/badge.svg)](https://github.com/233Chad/LockettePro/actions/workflows/gradle.yml)
 
 
-***WARNING: Versions for Minecraft 1.20 are not fully tested yet.***
+***WARNING: Versions for Minecraft 1.20.6 are not fully tested yet.***
 Please create an issus if you find anything wrong. Thank you.
 For Minecraft 1.14.4, please download [build \#9](https://ci.nyaacat.com/job/LockettePro/9/).
 
