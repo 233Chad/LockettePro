@@ -188,7 +188,7 @@ public class LockettePro extends JavaPlugin {
                                 for (int i = 1; i < args.length; i++) {
                                     message.append(args[i]);
                                 }
-                                message = new StringBuilder(LegacyComponentSerializer.legacyAmpersand().deserialize(message.toString()).toString());
+                                message = new StringBuilder(LegacyComponentSerializer.legacyAmpersand().deserialize(message.toString()).content());
                                 if (!player.hasPermission("lockettepro.admin.edit") && !debug && message.length() > 18) {
                                     Utils.sendMessages(player, Config.getLang("line-is-too-long"));
                                     return true;

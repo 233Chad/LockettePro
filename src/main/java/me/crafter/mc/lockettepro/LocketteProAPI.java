@@ -1,6 +1,7 @@
 package me.crafter.mc.lockettepro;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
@@ -279,16 +280,16 @@ public class LocketteProAPI {
     }
 
     public static boolean isLockSign(Block block) {
-        return isSign(block) && isLockString(((Sign) block.getState()).getSide(Side.FRONT).lines().get(0).toString());
+        return isSign(block) && isLockString(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content());
     }
 
     public static boolean isAdditionalSign(Block block) {
-        return isSign(block) && isAdditionalString(((Sign) block.getState()).getSide(Side.FRONT).lines().get(0).toString());
+        return isSign(block) && isAdditionalString(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content());
     }
 
     public static boolean isLockSignOrAdditionalSign(Block block) {
         if (isSign(block)) {
-            String line = ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0).toString();
+            String line = ((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content();
             return isLockStringOrAdditionalString(line);
         } else {
             return false;
@@ -297,7 +298,7 @@ public class LocketteProAPI {
 
     public static boolean isOwnerOnSign(Block block, Player player) { // Requires isLockSign
         @NotNull List<Component> lines = ((Sign) block.getState()).getSide(Side.FRONT).lines();
-        if (Utils.isPlayerOnLine(player, lines.get(1).toString())) {
+        if (Utils.isPlayerOnLine(player, ((TextComponent) lines.get(1)).content())) {
             if (Config.isUuidEnabled()) {
                 Utils.updateLineByPlayer(block, 1, player);
             }
@@ -310,26 +311,26 @@ public class LocketteProAPI {
         @NotNull List<Component> lines = ((Sign) block.getState()).getSide(Side.FRONT).lines();
         // Normal
         for (int i = 1; i < 4; i++) {
-            if (Utils.isPlayerOnLine(player, lines.get(i).toString())) {
+            if (Utils.isPlayerOnLine(player, ((TextComponent) lines.get(i)).content())) {
                 if (Config.isUuidEnabled()) {
                     Utils.updateLineByPlayer(block, i, player);
                 }
                 return true;
-            } else if (Config.isEveryoneSignString(lines.get(i).toString())) {
+            } else if (Config.isEveryoneSignString(((TextComponent) lines.get(i)).content())) {
                 return true;
             }
         }
         // For Vault & Scoreboard
         for (int i = 1; i < 4; i++) {
-            if (Dependency.isPermissionGroupOf(lines.get(i).toString(), player)) return true;
-            if (Dependency.isScoreboardTeamOf(lines.get(i).toString(), player)) return true;
+            if (Dependency.isPermissionGroupOf(((TextComponent) lines.get(i)).content(), player)) return true;
+            if (Dependency.isScoreboardTeamOf(((TextComponent) lines.get(i)).content(), player)) return true;
         }
         return false;
     }
 
     public static boolean isSignExpired(Block block) {
         if (!isSign(block) || !isLockSign(block)) return false;
-        return isLineExpired(((Sign) block.getState()).getSide(Side.FRONT).lines().get(0).toString());
+        return isLineExpired(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content());
     }
 
     public static boolean isLineExpired(String line) {
@@ -385,7 +386,7 @@ public class LocketteProAPI {
             if (isSign(relative)) {
                 Sign sign = (Sign) relative.getState();
                 for (Component line : sign.getSide(Side.FRONT).lines()) {
-                    int linetime = Config.getTimer(line.toString());
+                    int linetime = Config.getTimer(((TextComponent)line).content());
                     if (linetime > 0) return linetime;
                 }
             }

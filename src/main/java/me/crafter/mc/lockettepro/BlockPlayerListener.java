@@ -1,6 +1,7 @@
 package me.crafter.mc.lockettepro;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -113,7 +114,9 @@ public class BlockPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onManualLock(SignChangeEvent event) {
         if (!Tag.WALL_SIGNS.isTagged(event.getBlock().getType())) return;
-        String topline = event.lines().get(0).toString();
+        String topline = null;
+        if (event.lines().getFirst() instanceof TextComponent component)
+            topline = component.content();
         if (topline == null) return;
         Player player = event.getPlayer();
         /*  Issue #46 - Old version of Minecraft trim signs in unexpected way.

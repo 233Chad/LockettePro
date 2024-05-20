@@ -106,7 +106,7 @@ public class Config {
         lockdefaultcreatetime = config.getLong("lock-default-create-time-unix", -1L);
         if (lockdefaultcreatetime < -1L) lockdefaultcreatetime = -1L;
         lockexpirestring = LegacyComponentSerializer.legacyAmpersand().deserialize(
-                config.getString("lock-expire-string", "&3[Expired]")).toString();
+                config.getString("lock-expire-string", "&3[Expired]")).content();
         List<String> unprocesseditems = config.getStringList("lockables");
         lockables = new HashSet<Material>();
         for (String unprocesseditem : unprocesseditems) {
@@ -221,7 +221,7 @@ public class Config {
     }
 
     public static String getLang(String path) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(lang.getString(path, "")).toString();
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(lang.getString(path, "")).content();
     }
 
     public static boolean isUuidEnabled() {

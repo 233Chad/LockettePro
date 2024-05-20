@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
@@ -178,7 +179,7 @@ public class Utils {
 
     public static void updateUuidByUsername(final Block block, final int line) {
         Sign sign = (Sign) block.getState();
-        final String original = sign.getSide(Side.FRONT).lines().get(line).toString();
+        final String original = ((TextComponent) sign.getSide(Side.FRONT).lines().get(line)).content();
         CompatibleScheduler.runTaskAsynchronously(LockettePro.getPlugin(), () -> {
             String username = original;
             if (username.contains("#")) {
@@ -201,7 +202,7 @@ public class Utils {
 
     public static void updateUsernameByUuid(Block block, int line) {
         Sign sign = (Sign) block.getState();
-        String original = sign.getSide(Side.FRONT).lines().get(line).toString();
+        String original = ((TextComponent) sign.getSide(Side.FRONT).lines().get(line)).content();
         if (isUsernameUuidLine(original)) {
             String uuid = getUuidFromLine(original);
             if (uuid == null) return;
