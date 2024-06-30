@@ -130,7 +130,7 @@ public class LockettePro extends JavaPlugin {
                             // Basic
                             sender.sendMessage("LockettePro: " + getPluginMeta().getVersion());
                             // Version
-                            sender.sendMessage("Bukkit: " + "v" + Bukkit.getServer().getClass().getPackage().getName().split("v")[1]);
+                            sender.sendMessage("Bukkit: " + Bukkit.getServer().getBukkitVersion());
                             sender.sendMessage("Server version: " + Bukkit.getVersion());
                             // Config
                             sender.sendMessage("UUID: " + Config.isUuidEnabled());
@@ -167,11 +167,10 @@ public class LockettePro extends JavaPlugin {
                     }
                 }
                 // The following commands requires player
-                if (!(sender instanceof Player)) {
+                if (!(sender instanceof Player player)) {
                     Utils.sendMessages(sender, Config.getLang("command-usage"));
                     return false;
                 }
-                Player player = (Player) sender;
                 switch (args[0]) {
                     case "1":
                     case "2":

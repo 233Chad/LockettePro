@@ -124,8 +124,8 @@ public class Utils {
 //		player.spigot().playEffect(block.getLocation().add(0.5, 0.5, 0.5), Effect.FLAME, 0, 0, 0.3F, 0.3F, 0.3F, 0.01F, 64, 64);
     }
 
-    public static void sendMessages(CommandSender sender, String messages) {
-        if (messages == null || messages.isEmpty()) return;
+    public static void sendMessages(CommandSender sender, TextComponent messages) {
+        if (messages == null) return;
         sender.sendMessage(messages);
     }
 

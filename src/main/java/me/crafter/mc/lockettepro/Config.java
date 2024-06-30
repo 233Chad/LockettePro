@@ -1,5 +1,6 @@
 package me.crafter.mc.lockettepro;
 
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -220,8 +221,8 @@ public class Config {
         return lockexpirestring;
     }
 
-    public static String getLang(String path) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(lang.getString(path, "")).content();
+    public static TextComponent getLang(String path) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(lang.getString(path, ""));
     }
 
     public static boolean isUuidEnabled() {
