@@ -39,7 +39,7 @@ public class BlockDebugListener implements Listener {
                 p.sendMessage(Component.text(" - now     : " + (int) (System.currentTimeMillis() / 1000)));
             }
 
-            p.sendMessage(Component.text("Block: " + b.getType() + " " + b.getBlockData()));
+            p.sendMessage(Component.text("Block: " + b.getType() + " " + b.getBlockData().getAsString()));
 
             if (Tag.WALL_SIGNS.isTagged(b.getType())) {
 

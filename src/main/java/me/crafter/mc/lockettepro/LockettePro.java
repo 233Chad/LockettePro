@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +19,8 @@ import java.util.List;
 public class LockettePro extends JavaPlugin {
 
     private static Plugin plugin;
-    private boolean debug = false;
     private static boolean needcheckhand = true;
+    private BlockDebugListener debugListener;
 
     public void onEnable() {
         // Version
@@ -38,7 +39,10 @@ public class LockettePro extends JavaPlugin {
         new Config(this);
         // Register Listeners
         // If debug mode is not on, debug listener won't register
-        if (debug) getServer().getPluginManager().registerEvents(new BlockDebugListener(), this);
+        if (Config.isDebug()) {
+            debugListener = new BlockDebugListener();
+            getServer().getPluginManager().registerEvents(debugListener, this);
+        }
         getServer().getPluginManager().registerEvents(new BlockPlayerListener(), this);
         getServer().getPluginManager().registerEvents(new BlockEnvironmentListener(), this);
         getServer().getPluginManager().registerEvents(new BlockInventoryMoveListener(), this);
@@ -106,6 +110,14 @@ public class LockettePro extends JavaPlugin {
                                 DependencyProtocolLib.cleanUpProtocolLib(this);
                             }
                             Config.reload();
+                            if (Config.isDebug()) {
+                                debugListener = new BlockDebugListener();
+                                getServer().getPluginManager().registerEvents(debugListener, this);
+                            } else if (debugListener != null) {
+                                HandlerList.unregisterAll(debugListener);
+                                debugListener = null;
+                            }
+
                             if (Config.isUuidEnabled() && Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
                                 DependencyProtocolLib.setUpProtocolLib(this);
                             }
@@ -188,14 +200,14 @@ public class LockettePro extends JavaPlugin {
                                     message.append(args[i]);
                                 }
                                 message = new StringBuilder(LegacyComponentSerializer.legacyAmpersand().deserialize(message.toString()).content());
-                                if (!player.hasPermission("lockettepro.admin.edit") && !debug && message.length() > 18) {
+                                if (!player.hasPermission("lockettepro.admin.edit") && !Config.isDebug() && message.length() > 18) {
                                     Utils.sendMessages(player, Config.getLang("line-is-too-long"));
                                     return true;
                                 }
                                 if (LocketteProAPI.isLockSign(block)) {
                                     switch (args[0]) {
                                         case "1":
-                                            if (!debug || !player.hasPermission("lockettepro.admin.edit")) {
+                                            if (!Config.isDebug() || !player.hasPermission("lockettepro.admin.edit")) {
                                                 Utils.sendMessages(player, Config.getLang("cannot-change-this-line"));
                                                 break;
                                             }
@@ -218,7 +230,7 @@ public class LockettePro extends JavaPlugin {
                                 } else if (LocketteProAPI.isAdditionalSign(block)) {
                                     switch (args[0]) {
                                         case "1":
-                                            if (!debug || !player.hasPermission("lockettepro.admin.edit")) {
+                                            if (!Config.isDebug() || !player.hasPermission("lockettepro.admin.edit")) {
                                                 Utils.sendMessages(player, Config.getLang("cannot-change-this-line"));
                                                 break;
                                             }
@@ -243,21 +255,21 @@ public class LockettePro extends JavaPlugin {
                         }
                         break;
                     case "force":
-                        if (debug && player.hasPermission("lockettepro.debug")) {
+                        if (Config.isDebug() && player.hasPermission("lockettepro.debug")) {
                             Block selectedSign = Utils.getSelectedSign(player);
                             if (selectedSign != null)
                                 Utils.setSignLine(selectedSign, Integer.parseInt(args[1]), args[2]);
                             break;
                         }
                     case "update":
-                        if (debug && player.hasPermission("lockettepro.debug")) {
+                        if (Config.isDebug() && player.hasPermission("lockettepro.debug")) {
                             Block selectedSign = Utils.getSelectedSign(player);
                             if (selectedSign != null)
                                 Utils.updateSign(selectedSign);
                             break;
                         }
                     case "uuid":
-                        if (debug && player.hasPermission("lockettepro.debug")) {
+                        if (Config.isDebug() && player.hasPermission("lockettepro.debug")) {
                             Utils.updateUuidOnSign(Utils.getSelectedSign(player));
                             break;
                         }

@@ -19,6 +19,7 @@ public class Config {
     private static FileConfiguration config;
     private static FileConfiguration lang;
     private static String langfilename = "lang.yml";
+    private static boolean debug = false;
     private static boolean uuid = false;
     private static Set<Material> lockables = new HashSet<>();
     private static Set<String> privatestrings = new HashSet<>();
@@ -52,6 +53,7 @@ public class Config {
         initDefaultConfig();
         initAdditionalFiles();
         config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml"));
+        debug = config.getBoolean("debug", false);
         uuid = config.getBoolean("enable-uuid-support", false);
         protocollib = config.getBoolean("protocollib", true);
         worldguard = config.getBoolean("worldguard", true);
@@ -140,6 +142,7 @@ public class Config {
     public static void initDefaultConfig() {
         plugin.saveDefaultConfig();
         config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml"));
+        config.addDefault("debug", false);
         config.addDefault("language-file-name", "lang.yml");
         config.addDefault("enable-quick-protect", true);
         config.addDefault("enable-uuid-support", false);
@@ -223,6 +226,10 @@ public class Config {
 
     public static TextComponent getLang(String path) {
         return LegacyComponentSerializer.legacyAmpersand().deserialize(lang.getString(path, ""));
+    }
+
+    public static boolean isDebug() {
+        return debug;
     }
 
     public static boolean isUuidEnabled() {
