@@ -1,27 +1,32 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id("xyz.jpenilla.run-paper") version "2.2.4"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 // Suppiled by Jenkins
 ext.majorVersion = 2
-ext.minorVersion = 15
-ext.minecraftVersion = "1.20.6"
+ext.minorVersion = 16
+ext.minecraftVersion = "1.21.10"
 
 ext.buildNumber = System.env.BUILD_NUMBER == null ? "x"                : "$System.env.BUILD_NUMBER"
 ext.mavenDirectory = System.env.MAVEN_DIR == null ? "$projectDir/repo" : "$System.env.MAVEN_DIR"
 ext.jdDirectory = System.env.JAVADOCS_DIR == null ? null               : "$System.env.JAVADOCS_DIR"
 
-sourceCompatibility = 21
-targetCompatibility = 21
+java {
+    sourceCompatibility = 21
+    targetCompatibility = 21
+}
 
 // differet version convension from Nyaa plugins
 group = "me.crafter.mc"
-archivesBaseName = "LockettePro"
 version = "$majorVersion.$minorVersion-b$buildNumber".toString()
 
+base {
+    archivesName = 'LockettePro'
+}
+
 runServer {
-    minecraftVersion("1.20.6")
+    minecraftVersion = "1.21.10"
 }
 
 // extra compile warnings
@@ -33,25 +38,26 @@ compileJava {
 repositories {
     mavenCentral()
 //    maven {name 'Spigot';     url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'}
-    maven {name 'Sonatype';   url 'https://oss.sonatype.org/content/groups/public'}
-    maven {name 'sk89q-repo'; url "https://maven.enginehub.org/repo/" }
-    maven {name 'playpro';    url 'https://maven.playpro.com/'}
-    maven {name 'vault-repo'; url 'https://jitpack.io'}
-    maven {name 'dmulloy2';   url 'https://repo.dmulloy2.net/repository/public/'}
-    maven {name 'paper-repo'; url 'https://repo.papermc.io/repository/maven-public/'}
+    maven {name ='Sonatype';   url ='https://oss.sonatype.org/content/groups/public'}
+    maven {name ='sk89q-repo'; url ="https://maven.enginehub.org/repo/" }
+    maven {name ='playpro';    url ='https://maven.playpro.com/'}
+    maven {name ='vault-repo'; url ='https://jitpack.io'}
+    maven {name ='dmulloy2';   url ='https://repo.dmulloy2.net/repository/public/'}
+    maven {name ='paper-repo'; url ='https://repo.papermc.io/repository/maven-public/'}
 }
 
 dependencies {
     implementation 'org.jetbrains:annotations:24.1.0'
-    compileOnly "io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT"
+    compileOnly 'io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT'
     compileOnly ("com.github.MilkBowl:VaultAPI:1.7"){ transitive = false}
     compileOnly ('com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT') { transitive = false }
-    compileOnly (group: "com.comphenix.protocol", name: "ProtocolLib", version: "5.2.0-SNAPSHOT"){ transitive = false}
-    compileOnly ('net.coreprotect:coreprotect:21.0'){ transitive = false}
+    compileOnly ('net.dmulloy2:ProtocolLib:5.4.0'){ transitive = false}
+    compileOnly ('net.coreprotect:coreprotect:23.0'){ transitive = false}
 }
 
-processResources {
-    expand version: project.version
+tasks.processResources {
+    filteringCharset = "UTF-8"
+    expand(version: project.version)
 }
 
 // maven publications
@@ -62,16 +68,16 @@ tasks.register('sourcesJar', Jar) {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            artifact sourcesJar
-            artifactId "lockettepro"
-            version "$majorVersion.$minorVersion-SNAPSHOT"
+        register("mavenJava", MavenPublication) {
+            artifact tasks.named("sourcesJar")
+            artifactId = "lockettepro"
+            version = "${majorVersion}.${minorVersion}-SNAPSHOT"
             from components.java
         }
     }
     repositories {
         maven {
-            url "$mavenDirectory"
+            url = uri("${mavenDirectory}")
         }
     }
 }

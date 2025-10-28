@@ -1,14 +1,8 @@
 package me.crafter.mc.lockettepro;
 
-import java.util.Iterator;
-
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Silverfish;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Wither;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -82,13 +76,12 @@ public class BlockEnvironmentListener implements Listener {
         }
     }
 
-    // Prevent villager open door
+    // Prevent mob open door
     @EventHandler(priority = EventPriority.HIGH)
-    public void onVillagerOpenDoor(EntityInteractEvent event) {
-        if (Config.isProtectionExempted("villager")) return;
-        // Explicitly to villager vs all doors
-        if (event.getEntity() instanceof Villager &&
-                (LocketteProAPI.isSingleDoorBlock(event.getBlock()) || LocketteProAPI.isDoubleDoorBlock(event.getBlock())) &&
+    public void onMobInteract(EntityInteractEvent event) {
+        if (((event.getEntity() instanceof Villager && !Config.isProtectionExempted("villager")) ||
+                (event.getEntity() instanceof CopperGolem && !Config.isProtectionExempted("coppergolem"))) &&
+                (LocketteProAPI.isSingleDoorBlock(event.getBlock()) || LocketteProAPI.isDoubleDoorBlock(event.getBlock()) || LocketteProAPI.isChest(event.getBlock())) &&
                 LocketteProAPI.isProtected(event.getBlock())) {
             event.setCancelled(true);
         }

@@ -280,16 +280,16 @@ public class LocketteProAPI {
     }
 
     public static boolean isLockSign(Block block) {
-        return isSign(block) && isLockString(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content());
+        return isSign(block) && isLockString(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().getFirst()).content());
     }
 
     public static boolean isAdditionalSign(Block block) {
-        return isSign(block) && isAdditionalString(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content());
+        return isSign(block) && isAdditionalString(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().getFirst()).content());
     }
 
     public static boolean isLockSignOrAdditionalSign(Block block) {
         if (isSign(block)) {
-            String line = ((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content();
+            String line = ((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().getFirst()).content();
             return isLockStringOrAdditionalString(line);
         } else {
             return false;
@@ -330,7 +330,7 @@ public class LocketteProAPI {
 
     public static boolean isSignExpired(Block block) {
         if (!isSign(block) || !isLockSign(block)) return false;
-        return isLineExpired(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().get(0)).content());
+        return isLineExpired(((TextComponent) ((Sign) block.getState()).getSide(Side.FRONT).lines().getFirst()).content());
     }
 
     public static boolean isLineExpired(String line) {
@@ -386,7 +386,7 @@ public class LocketteProAPI {
             if (isSign(relative)) {
                 Sign sign = (Sign) relative.getState();
                 for (Component line : sign.getSide(Side.FRONT).lines()) {
-                    int linetime = Config.getTimer(((TextComponent)line).content());
+                    int linetime = Config.getTimer(((TextComponent) line).content());
                     if (linetime > 0) return linetime;
                 }
             }
@@ -468,7 +468,21 @@ public class LocketteProAPI {
         org.bukkit.block.data.Openable openablestate = (org.bukkit.block.data.Openable) block.getBlockData();
         openablestate.setOpen(open);
         block.setBlockData(openablestate);
-        block.getWorld().playSound(block.getLocation(), open ? Sound.BLOCK_WOODEN_DOOR_OPEN : Sound.BLOCK_WOODEN_DOOR_CLOSE,1,1);
+        Sound doorSound;
+        switch (block.getType()) {
+            case IRON_DOOR -> doorSound = open ? Sound.BLOCK_IRON_DOOR_OPEN : Sound.BLOCK_WOODEN_DOOR_CLOSE;
+            case COPPER_DOOR, OXIDIZED_COPPER_DOOR, EXPOSED_COPPER_DOOR, WAXED_COPPER_DOOR, WEATHERED_COPPER_DOOR,
+                 WAXED_EXPOSED_COPPER_DOOR, WAXED_OXIDIZED_COPPER_DOOR, WAXED_WEATHERED_COPPER_DOOR ->
+                    doorSound = open ? Sound.BLOCK_COPPER_DOOR_OPEN : Sound.BLOCK_COPPER_DOOR_CLOSE;
+            case BAMBOO_DOOR ->
+                    doorSound = open ? Sound.BLOCK_BAMBOO_WOOD_DOOR_OPEN : Sound.BLOCK_BAMBOO_WOOD_DOOR_CLOSE;
+            case CHERRY_DOOR ->
+                    doorSound = open ? Sound.BLOCK_CHERRY_WOOD_DOOR_OPEN : Sound.BLOCK_CHERRY_WOOD_DOOR_CLOSE;
+            case WARPED_DOOR, CRIMSON_DOOR ->
+                    doorSound = open ? Sound.BLOCK_NETHER_WOOD_DOOR_OPEN : Sound.BLOCK_NETHER_WOOD_DOOR_CLOSE;
+            default -> doorSound = open ? Sound.BLOCK_WOODEN_DOOR_OPEN : Sound.BLOCK_WOODEN_DOOR_CLOSE;
+        }
+        block.getWorld().playSound(block.getLocation(), doorSound, 1, 1);
     }
 
     public static void toggleDoor(Block block) {

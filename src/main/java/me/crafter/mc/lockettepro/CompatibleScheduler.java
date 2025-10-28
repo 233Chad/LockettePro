@@ -8,14 +8,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.function.Supplier;
 
 public class CompatibleScheduler {
-    private static final boolean isSpigot = ((Supplier<Boolean>) () -> {
-        try {
-            Bukkit.getServer().spigot();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }).get();
+    private static final boolean isSpigot = ((Supplier<Boolean>) () -> Bukkit.getServer().getVersion().contains("Spigot")).get();
 
     private static final boolean isFolia = ((Supplier<Boolean>) () -> {
         try {
